@@ -1,8 +1,15 @@
 package io.github.monthalcantara.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 import java.util.List;
 
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 public class Item {
 
@@ -15,5 +22,7 @@ public class Item {
 
     @OneToMany
     private List<Product> products;
+
+    private Integer quantity;
 
 }
