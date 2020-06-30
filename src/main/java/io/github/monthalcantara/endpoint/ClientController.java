@@ -10,6 +10,19 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(value = "/client")
 public class ClientController {
 
+    //buscar todos
+
+    //buscar por id
+
+    //buscar por nome
+
+    //buscar por pedido
+
+    //criar cliente
+
+    //excluir cliente
+
+    //atualizar cliente
 
 }
 

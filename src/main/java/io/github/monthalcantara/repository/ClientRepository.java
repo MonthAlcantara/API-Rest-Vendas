@@ -21,5 +21,10 @@ public interface ClientRepository extends JpaRepository<Client, Integer> {
     @Query("Select c from Client c left join fetch c.orderItems where c.id = :id")
     Optional<Client> findClientFetchOrderItem(@Param("id") Integer id);
 
+    Optional<Client> findByNameLike(String name);
+
+    Optional<Client> findById(Integer id);
+
+    Optional<List<Client>> findAllOp();
 
 }
