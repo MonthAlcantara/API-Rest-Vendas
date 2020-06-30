@@ -5,7 +5,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -15,13 +14,15 @@ public class Item {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
     @ManyToOne
-    private Request request;
+    @JoinColumn(name = "orderItem.id")
+    private OrderItem orderItem;
 
-    @OneToMany
-    private List<Product> products;
+    @ManyToOne
+    @JoinColumn(name = "product.id")
+    private Product products;
 
     private Integer quantity;
 

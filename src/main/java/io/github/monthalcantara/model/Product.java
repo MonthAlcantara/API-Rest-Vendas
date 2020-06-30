@@ -16,8 +16,8 @@ import java.math.BigDecimal;
 @Entity
 public class Product {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Integer id;
 
     private String description;
 
