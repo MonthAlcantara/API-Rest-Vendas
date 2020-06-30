@@ -21,7 +21,7 @@ public class OrderItem {
     private Integer id;
 
     @ManyToOne
-    @JoinColumn(name = "cliente.id")
+    @JoinColumn(name = "cliente_id")
     private Client client;
 
     @CreatedDate
@@ -30,6 +30,6 @@ public class OrderItem {
     @Column(length = 20, precision = 2)
     private BigDecimal total;
 
-    @OneToMany(mappedBy = "item")
+    @OneToMany(mappedBy = "orderItem")
     private List<Item> items;
 }

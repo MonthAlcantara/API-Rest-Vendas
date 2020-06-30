@@ -17,11 +17,11 @@ public class Item {
     private Integer id;
 
     @ManyToOne
-    @JoinColumn(name = "orderItem.id")
+    @JoinColumn(name = "orderItem_id")
     private OrderItem orderItem;
 
     @ManyToOne
-    @JoinColumn(name = "product.id")
+    @JoinColumn(name = "product_id")
     private Product products;
 
     private Integer quantity;
