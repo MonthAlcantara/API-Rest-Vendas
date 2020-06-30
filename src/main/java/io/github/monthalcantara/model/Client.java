@@ -12,6 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 @Entity
 public class Client {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;

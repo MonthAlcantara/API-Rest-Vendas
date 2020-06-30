@@ -27,9 +27,10 @@ public class OrderItem {
     @CreatedDate
     private LocalDate date;
 
-    @Column(length = 20, precision = 2)
+    @Column(precision = 20, scale = 2)
     private BigDecimal total;
 
     @OneToMany(mappedBy = "orderItem")
     private List<Item> items;
+
 }
