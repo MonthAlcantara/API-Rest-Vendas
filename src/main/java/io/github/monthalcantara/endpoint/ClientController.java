@@ -36,10 +36,10 @@ public class ClientController {
     @GetMapping
     public ResponseEntity findAll(Client filter) {
         ExampleMatcher matcher = ExampleMatcher
-                .matching()
-                .withIgnoreCase()
-                .withStringMatcher(
-                        ExampleMatcher.StringMatcher.CONTAINING);
+                .matching() //Criando o objeto
+                .withIgnoreCase() //Ignorando CamelCase dos parâmetros String
+                .withStringMatcher( //Forma que ele usará para encontrar os valores String
+                        ExampleMatcher.StringMatcher.CONTAINING);//CONTAINING -> Encontrar os valores que possuem a String, independente da localização
         Example example = Example.of(filter, matcher);
         List<Client> clients = clientService.findAll(example);
         return ResponseEntity.ok(clients);
