@@ -20,6 +20,9 @@ public class Client {
     @Column(length = 100)
     private String name;
 
+    @Column(length = 11)
+    private String cpf;
+
     @OneToMany(mappedBy = "client")
     private List<OrderItem> orderItems;
 }

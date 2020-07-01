@@ -4,6 +4,8 @@ import io.github.monthalcantara.model.Client;
 import io.github.monthalcantara.service.interfaces.ClientService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,15 +21,34 @@ public class ClientController {
     @Autowired
     private ClientService clientService;
 
+    @PutMapping("/{id}")
+    @ResponseBody
+    public ResponseEntity updateById(@PathVariable Integer id,
+                                     @RequestBody Client client) {
+        return clientService.findById(id)
+                .map(c -> {
+                    client.setId(c.getId());
+                    clientService.save(client);
+                    return ResponseEntity.noContent().build();
+                }).orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
     @GetMapping
-    public ResponseEntity findAll() {
-        Optional<List<Client>> clients = Optional.of(clientService.findAll());
-        return clients.map(clientList -> new ResponseEntity(clientList, HttpStatus.OK)).orElseGet(() -> ResponseEntity.notFound().build());
+    public ResponseEntity findAll(Client filter) {
+        ExampleMatcher matcher = ExampleMatcher
+                .matching()
+                .withIgnoreCase()
+                .withStringMatcher(
+                        ExampleMatcher.StringMatcher.CONTAINING);
+        Example example = Example.of(filter, matcher);
+        List<Client> clients = clientService.findAll(example);
+        return ResponseEntity.ok(clients);
+
     }
 
     @GetMapping("/{id}")
     public ResponseEntity findById(@PathVariable Integer id) {
-        Optional<Client> client = Optional.of(clientService.findById(id));
+        Optional<Client> client = clientService.findById(id);
         return client.map(value -> new ResponseEntity(value, HttpStatus.OK)).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
@@ -44,18 +65,12 @@ public class ClientController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity deleteById(@PathVariable Integer id) {
-        if (Optional.of(clientService.findById(id)).isPresent()) {
+        if (clientService.findById(id).isPresent()) {
             clientService.deleteById(id);
-            return ResponseEntity.ok().build();
+            return ResponseEntity.noContent().build();
         }
         return ResponseEntity.notFound().build();
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity updateById(@PathVariable Integer id, @RequestBody Client client) {
-        Optional<Client> clientOptional = Optional.of(clientService.updateById(id, client));
-
-        return new ResponseEntity(HttpStatus.OK);
-    }
 }
 

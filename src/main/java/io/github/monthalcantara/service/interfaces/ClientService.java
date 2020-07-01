@@ -1,15 +1,16 @@
 package io.github.monthalcantara.service.interfaces;
 
 import io.github.monthalcantara.model.Client;
-import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Example;
 
 import java.util.List;
+import java.util.Optional;
 
 
 public interface ClientService {
     Client findByNameLike(String name);
 
-    Client findById(Integer id);
+    Optional<Client> findById(Integer id);
 
     List<Client> findByName(String name);
 
@@ -26,5 +27,7 @@ public interface ClientService {
     void deleteById(Integer id);
 
     Client updateById(Integer id, Client client);
+
+    List<Client> findAll(Example example);
 
 }

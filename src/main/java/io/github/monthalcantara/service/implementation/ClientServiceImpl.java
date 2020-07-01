@@ -4,6 +4,9 @@ import io.github.monthalcantara.model.Client;
 import io.github.monthalcantara.repository.ClientRepository;
 import io.github.monthalcantara.service.interfaces.ClientService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,9 +24,9 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public Client findById(Integer id) {
+    public Optional<Client> findById(Integer id) {
         Optional<Client> client = clientRepository.findById(id);
-        return client.orElse(null);
+        return client;
     }
 
     @Override
@@ -73,4 +76,8 @@ public class ClientServiceImpl implements ClientService {
         }
         return clientRepository.save(client);
     }
+    public List<Client> findAll(Example example){
+        return clientRepository.findAll(example);
+    }
+
 }
