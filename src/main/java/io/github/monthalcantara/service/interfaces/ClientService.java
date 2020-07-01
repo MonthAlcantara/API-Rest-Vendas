@@ -4,9 +4,8 @@ import io.github.monthalcantara.model.Client;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
-@Service
+
 public interface ClientService {
     Client findByNameLike(String name);
 
@@ -20,6 +19,12 @@ public interface ClientService {
 
     boolean existsByName(String name);
 
+    Client save(Client client);
+
     void deleteByName(String name);
+
+    void deleteById(Integer id);
+
+    Client updateById(Integer id, Client client);
 
 }
