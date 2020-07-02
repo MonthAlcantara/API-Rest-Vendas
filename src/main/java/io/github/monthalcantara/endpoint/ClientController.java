@@ -9,6 +9,7 @@ import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
@@ -22,28 +23,27 @@ public class ClientController {
     private ClientService clientService;
 
     @PutMapping("/{id}")
-    @ResponseBody
-    public ResponseEntity updateById(@PathVariable Integer id,
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public Client updateById(@PathVariable Integer id,
                                      @RequestBody Client client) {
         return clientService.findById(id)
                 .map(c -> {
                     client.setId(c.getId());
                     clientService.save(client);
-                    return ResponseEntity.noContent().build();
-                }).orElseGet(() -> ResponseEntity.notFound().build());
+                    return client;
+                }).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Client not found"));
     }
 
     @GetMapping
     public ResponseEntity findAll(Client filter) {
         ExampleMatcher matcher = ExampleMatcher
-                .matching() //Criando o objeto
-                .withIgnoreCase() //Ignorando CamelCase dos parâmetros String
-                .withStringMatcher( //Forma que ele usará para encontrar os valores String
-                        ExampleMatcher.StringMatcher.CONTAINING);//CONTAINING -> Encontrar os valores que possuem a String, independente da localização
+                .matching()
+                .withIgnoreCase()
+                .withStringMatcher(
+                        ExampleMatcher.StringMatcher.CONTAINING);
         Example example = Example.of(filter, matcher);
         List<Client> clients = clientService.findAll(example);
         return ResponseEntity.ok(clients);
-
     }
 
     @GetMapping("/{id}")
