@@ -30,4 +30,5 @@ public interface ClientService {
 
     List<Client> findAll(Example example);
 
+
 }
