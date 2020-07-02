@@ -13,4 +13,8 @@ public interface ProductService {
     Optional<Product> findById(Integer id);
 
     Optional<Product> findByDescription(String description);
+
+    void deleteById(Integer id);
+
+    Product save(Product product);
 }

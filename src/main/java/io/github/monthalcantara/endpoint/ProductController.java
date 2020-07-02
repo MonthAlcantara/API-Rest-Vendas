@@ -1,22 +1,85 @@
 package io.github.monthalcantara.endpoint;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import io.github.monthalcantara.model.Product;
+import io.github.monthalcantara.service.interfaces.ProductService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
+
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.Optional;
 
 @RestController
-@RequestMapping(value="/product")
+@RequestMapping(value = "/product")
 public class ProductController {
 
-    //Buscar todos
+    @Autowired
+    ProductService productService;
 
-    //Buscar por id
+    @GetMapping
+    @ResponseStatus(HttpStatus.OK)
+    public List findAll(Product filter) {
+        ExampleMatcher matcher = ExampleMatcher
+                .matching()
+                .withIgnoreCase()
+                .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING);
+        Example example = Example.of(filter, matcher);
 
-    //Buscar por descrição
+        return productService.findAll(example);
+    }
 
-    //Buscar preço por id
+    @GetMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public Product findById(@PathVariable Integer id) {
+        return productService.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found"));
+    }
 
-    //Atualizar por id
+    @GetMapping("/description/{description}")
+    @ResponseStatus(HttpStatus.OK)
+    public String findByDescription(@PathVariable String description) {
+        return productService.findByDescription(description)
+                .map(product -> product.getDescription())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found"));
+    }
 
-    //Deletar produto
+    @GetMapping("/price/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public BigDecimal findPriceById(@PathVariable Integer id) {
+        return productService.findById(id)
+                .map(product -> product.getPrice())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found"));
+    }
 
+    @PutMapping("{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void updateById(@PathVariable Integer id, @RequestBody Product product) {
+        productService
+                .findById(id)
+                .map(p -> {
+                    product.setId(p.getId());
+                    productService.save(product);
+                    return product;
+                })
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found"));
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteById(@PathVariable Integer id) {
+        if(productService.findById(id).isPresent()){
+            productService.deleteById(id);
+        }
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Product not found");
+    }
+
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public Product save(@RequestBody Product product) {
+        return productService.save(product);
+    }
 }

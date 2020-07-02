@@ -30,4 +30,14 @@ public class ProductServiceImpl implements ProductService {
     public Optional<Product> findByDescription(String description) {
         return productRepository.findByDescription(description);
     }
+
+    @Override
+    public void deleteById(Integer id) {
+        productRepository.deleteById(id);
+    }
+
+    @Override
+    public Product save(Product product) {
+        return productRepository.save(product);
+    }
 }
