@@ -55,6 +55,14 @@ public class ProductController {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found"));
     }
 
+    @GetMapping("/priceByDescription/{description}")
+    @ResponseStatus(HttpStatus.OK)
+    public BigDecimal findPriceByDescription(@PathVariable String description) {
+        return productService.findByDescription(description)
+                .map(product -> product.getPrice())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found"));
+    }
+
     @PutMapping("{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void updateById(@PathVariable Integer id, @RequestBody Product product) {
