@@ -1,7 +1,7 @@
 package io.github.monthalcantara.service.implementation;
 
-import io.github.monthalcantara.dto.OrderDTO;
-import io.github.monthalcantara.dto.ItemDTO;
+import io.github.monthalcantara.dto.request.OrderDTO;
+import io.github.monthalcantara.dto.request.ItemDTO;
 import io.github.monthalcantara.exception.BusinessRuleException;
 import io.github.monthalcantara.model.Client;
 import io.github.monthalcantara.model.Item;
@@ -112,6 +112,11 @@ orderRepository.deleteById(id);
             }).orElseThrow(()-> new BusinessRuleException("Order not found"));
     }
 
+    @Override
+    public Optional<OrderItem> getOrderComplete(Integer id) {
+        return orderRepository.findByIdFetchItems(id);
+    }
+
     private List<Item> convertItems(OrderItem orderItem, List<ItemDTO> items) {
         if (items.isEmpty()) {
             throw new BusinessRuleException("Impossible. List is Empty");
@@ -128,7 +133,6 @@ orderRepository.deleteById(id);
                             .products(product)
                             .orderItem(orderItem)
                             .build();
-
                 }).collect(Collectors.toList());
 
     }

@@ -15,4 +15,6 @@ public interface OrderRepository extends JpaRepository<OrderItem,Integer> {
     List<OrderItem> findAll(Example example);
 
     OrderItem save(OrderItem orderItem);
+
+    Optional<OrderItem> findByIdFetchItems(Integer id);
 }

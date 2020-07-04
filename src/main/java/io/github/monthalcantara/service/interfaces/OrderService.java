@@ -1,6 +1,6 @@
 package io.github.monthalcantara.service.interfaces;
 
-import io.github.monthalcantara.dto.OrderDTO;
+import io.github.monthalcantara.dto.request.OrderDTO;
 import io.github.monthalcantara.model.OrderItem;
 import org.springframework.data.domain.Example;
 
@@ -28,4 +28,6 @@ public interface OrderService {
     BigDecimal findPriceTotal(Integer id);
 
     OrderItem updateById(Integer id, OrderItem orderItem);
+
+    Optional<OrderItem> getOrderComplete(Integer id);
 }

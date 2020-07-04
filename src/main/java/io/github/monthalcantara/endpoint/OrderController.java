@@ -1,9 +1,11 @@
 package io.github.monthalcantara.endpoint;
 
-import io.github.monthalcantara.dto.OrderDTO;
+import io.github.monthalcantara.dto.request.OrderDTO;
+import io.github.monthalcantara.dto.response.ItemResponseDTO;
+import io.github.monthalcantara.dto.response.OrderResponseDTO;
 import io.github.monthalcantara.exception.BusinessRuleException;
+import io.github.monthalcantara.model.Item;
 import io.github.monthalcantara.model.OrderItem;
-import io.github.monthalcantara.service.interfaces.ClientService;
 import io.github.monthalcantara.service.interfaces.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
@@ -82,6 +84,21 @@ public class OrderController {
         }).orElseThrow(() -> new BusinessRuleException("Order not Found")), HttpStatus.OK);
 
     }
+
+    private OrderResponseDTO convertOrder(OrderItem order){
+        return new OrderResponseDTO()
+                .builder().clientName(order.getClient().getName())
+                .code(order.getId())
+                .cpf(order.getClient().getCpf())
+                .items(convertToItemDTO(order.getItems()))
+                .total(order.getTotal())
+                .build();
+
+    }
+    private List<ItemResponseDTO> convertToItemDTO(List<Item> items){
+        return null;
+    }
+
 
 
 }

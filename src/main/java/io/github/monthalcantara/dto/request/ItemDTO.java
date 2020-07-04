@@ -1,6 +1,5 @@
-package io.github.monthalcantara.dto;
+package io.github.monthalcantara.dto.request;
 
-import io.github.monthalcantara.model.Product;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
