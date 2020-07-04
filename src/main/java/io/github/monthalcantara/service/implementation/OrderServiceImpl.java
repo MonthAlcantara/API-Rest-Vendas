@@ -13,9 +13,11 @@ import io.github.monthalcantara.service.interfaces.ItemService;
 import io.github.monthalcantara.service.interfaces.OrderService;
 import io.github.monthalcantara.service.interfaces.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -42,6 +44,24 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    public Optional<List<OrderItem>> findAll() {
+        return Optional.empty();
+    }
+
+    @Override
+    public Optional<List<OrderItem>> findOrderItemByClient(Integer id) {
+        Client client = clientService.findById(id)
+                .orElseThrow(() ->
+                        new BusinessRuleException("Client code not found"));
+        return orderRepository.findByClient(client);
+    }
+
+    @Override
+    public void deleteById(Integer id) {
+orderRepository.deleteById(id);
+    }
+
+    @Override
     @Transactional
     public OrderItem save(OrderDTO orderItem) {
         Integer idClient = orderItem.getClient();
@@ -61,6 +81,35 @@ public class OrderServiceImpl implements OrderService {
         build.setItems(items);
         return build;
 
+    }
+
+    @Override
+    public OrderItem save(OrderItem orderItem) {
+        return orderRepository.save(orderItem);
+    }
+
+    @Override
+    public List<OrderItem> findAll(Example example) {
+
+        return orderRepository.findAll();
+    }
+
+    @Override
+    public BigDecimal findPriceTotal(Integer id) {
+        Optional<OrderItem> order = orderRepository.findById(id);
+        return order
+                .map(orderItem -> orderItem.getTotal())
+                .orElseThrow(() ->
+                        new BusinessRuleException("Order not found"));
+    }
+
+    @Override
+    public OrderItem updateById(Integer id, OrderItem orderItem) {
+        return orderRepository.findById(id).map(order -> {
+            Integer idOrder = order.getId();
+            orderItem.setId(idOrder);
+            return orderRepository.save(orderItem);
+            }).orElseThrow(()-> new BusinessRuleException("Order not found"));
     }
 
     private List<Item> convertItems(OrderItem orderItem, List<ItemDTO> items) {
