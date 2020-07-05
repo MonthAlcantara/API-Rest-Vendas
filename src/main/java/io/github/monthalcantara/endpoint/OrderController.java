@@ -12,11 +12,14 @@ import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(value = "/order")
@@ -56,7 +59,16 @@ public class OrderController {
         return new ResponseEntity(orderService
                 .findById(id)
                 .map(orderItem -> orderItem.getItems()).orElseThrow(() ->
-                        new BusinessRuleException("Items not found")), HttpStatus.OK);
+                        new BusinessRuleException("Items not found")), HttpStatus.NOT_FOUND);
+    }
+
+    //buscar order by Id
+    @GetMapping("/{id}")
+    public ResponseEntity findOrderById(@PathVariable Integer id) {
+        return new ResponseEntity(orderService
+                .findById(id)
+                .map(orderItem -> convertOrder(orderItem)).orElseThrow(() ->
+                        new BusinessRuleException("Items not found")), HttpStatus.NOT_FOUND);
     }
 
     //incluir novo pedido
@@ -74,9 +86,10 @@ public class OrderController {
     public void deleteOrder(@PathVariable Integer id) {
         orderService.deleteById(id);
     }
+
     //Atualizar pedido
     @PutMapping("/{id}")
-    public ResponseEntity update(@PathVariable Integer id, @RequestBody OrderItem orderItem){
+    public ResponseEntity update(@PathVariable Integer id, @RequestBody OrderItem orderItem) {
         return new ResponseEntity(orderService.findById(id).map(order -> {
             Integer idOrder = order.getId();
             orderItem.setId(idOrder);
@@ -85,7 +98,7 @@ public class OrderController {
 
     }
 
-    private OrderResponseDTO convertOrder(OrderItem order){
+    private OrderResponseDTO convertOrder(OrderItem order) {
         return new OrderResponseDTO()
                 .builder().clientName(order.getClient().getName())
                 .code(order.getId())
@@ -95,10 +108,20 @@ public class OrderController {
                 .build();
 
     }
-    private List<ItemResponseDTO> convertToItemDTO(List<Item> items){
-        return null;
+
+    private List<ItemResponseDTO> convertToItemDTO(List<Item> items) {
+        if (CollectionUtils.isEmpty(items)) {
+            return Collections.emptyList();
+        }
+        return items.stream().map(item -> {
+            return new ItemResponseDTO()
+                    .builder()
+                    .description(item.getProducts().getDescription())
+                    .priceUnit(item.getProducts().getPrice())
+                    .quantity(item.getQuantity())
+                    .build();
+        })
+                .collect(Collectors.toList());
     }
-
-
 
 }
