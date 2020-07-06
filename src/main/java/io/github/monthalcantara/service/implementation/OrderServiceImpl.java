@@ -2,6 +2,8 @@ package io.github.monthalcantara.service.implementation;
 
 import io.github.monthalcantara.dto.request.OrderDTO;
 import io.github.monthalcantara.dto.request.ItemDTO;
+import io.github.monthalcantara.dto.response.ItemResponseDTO;
+import io.github.monthalcantara.dto.response.OrderResponseDTO;
 import io.github.monthalcantara.exception.BusinessRuleException;
 import io.github.monthalcantara.model.Client;
 import io.github.monthalcantara.model.Item;
@@ -16,9 +18,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -136,4 +140,33 @@ orderRepository.deleteById(id);
                 }).collect(Collectors.toList());
 
     }
+
+    public OrderResponseDTO convertOrder(OrderItem order) {
+        return new OrderResponseDTO()
+                .builder().clientName(order.getClient().getName())
+                .code(order.getId())
+                .cpf(order.getClient().getCpf())
+                .items(convertToItemDTO(order.getItems()))
+                .total(order.getTotal())
+                .build();
+
+    }
+
+    private List<ItemResponseDTO> convertToItemDTO(List<Item> items) {
+        if (CollectionUtils.isEmpty(items)) {
+            return Collections.emptyList();
+        }
+        return items.stream().map(item -> {
+            return new ItemResponseDTO()
+                    .builder()
+                    .description(item.getProducts().getDescription())
+                    .priceUnit(item.getProducts().getPrice())
+                    .quantity(item.getQuantity())
+                    .build();
+        })
+                .collect(Collectors.toList());
+    }
+
+
 }
+

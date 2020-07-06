@@ -27,7 +27,6 @@ public class OrderController {
     @Autowired
     OrderService orderService;
 
-    //buscar todos os pedidos
     @GetMapping
     public ResponseEntity findAll(OrderItem orderItem) {
         ExampleMatcher matcher = ExampleMatcher
@@ -39,21 +38,18 @@ public class OrderController {
         return new ResponseEntity(orderItems, HttpStatus.OK);
     }
 
-    //buscar pedido pelo client
     @GetMapping("/client/{id}")
     public ResponseEntity findByClient(@PathVariable Integer id) {
         Optional<List<OrderItem>> orderItemByClient = orderService.findOrderItemByClient(id);
         return new ResponseEntity(orderItemByClient, HttpStatus.OK);
     }
 
-    //buscar total do pedido
     @GetMapping("/total/{id}")
     public ResponseEntity getTotal(@PathVariable Integer id) {
         BigDecimal priceTotal = orderService.findPriceTotal(id);
         return new ResponseEntity(priceTotal, HttpStatus.OK);
     }
 
-    //listar items do pedido
     @GetMapping("/item/{id}")
     public ResponseEntity getItems(@PathVariable Integer id) {
         return new ResponseEntity(orderService
@@ -62,16 +58,14 @@ public class OrderController {
                         new BusinessRuleException("Items not found")), HttpStatus.NOT_FOUND);
     }
 
-    //buscar order by Id
     @GetMapping("/{id}")
     public ResponseEntity findOrderById(@PathVariable Integer id) {
         return new ResponseEntity(orderService
                 .findById(id)
-                .map(orderItem -> convertOrder(orderItem)).orElseThrow(() ->
+                .map(orderItem -> orderService.convertOrder(orderItem)).orElseThrow(() ->
                         new BusinessRuleException("Items not found")), HttpStatus.NOT_FOUND);
     }
 
-    //incluir novo pedido
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Integer save(@RequestBody OrderDTO orderItem) {
@@ -80,14 +74,12 @@ public class OrderController {
 
     }
 
-    //deletar pedido
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public void deleteOrder(@PathVariable Integer id) {
         orderService.deleteById(id);
     }
 
-    //Atualizar pedido
     @PutMapping("/{id}")
     public ResponseEntity update(@PathVariable Integer id, @RequestBody OrderItem orderItem) {
         return new ResponseEntity(orderService.findById(id).map(order -> {
@@ -96,32 +88,6 @@ public class OrderController {
             return orderService.save(orderItem);
         }).orElseThrow(() -> new BusinessRuleException("Order not Found")), HttpStatus.OK);
 
-    }
-
-    private OrderResponseDTO convertOrder(OrderItem order) {
-        return new OrderResponseDTO()
-                .builder().clientName(order.getClient().getName())
-                .code(order.getId())
-                .cpf(order.getClient().getCpf())
-                .items(convertToItemDTO(order.getItems()))
-                .total(order.getTotal())
-                .build();
-
-    }
-
-    private List<ItemResponseDTO> convertToItemDTO(List<Item> items) {
-        if (CollectionUtils.isEmpty(items)) {
-            return Collections.emptyList();
-        }
-        return items.stream().map(item -> {
-            return new ItemResponseDTO()
-                    .builder()
-                    .description(item.getProducts().getDescription())
-                    .priceUnit(item.getProducts().getPrice())
-                    .quantity(item.getQuantity())
-                    .build();
-        })
-                .collect(Collectors.toList());
     }
 
 }
