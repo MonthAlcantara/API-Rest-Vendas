@@ -1,5 +1,6 @@
 package io.github.monthalcantara.service.implementation;
 
+import io.github.monthalcantara.exception.BusinessRuleException;
 import io.github.monthalcantara.model.Client;
 import io.github.monthalcantara.repository.ClientRepository;
 import io.github.monthalcantara.service.interfaces.ClientService;
@@ -20,7 +21,7 @@ public class ClientServiceImpl implements ClientService {
     @Override
     public Client findByNameLike(String name) {
         Optional<Client> client = clientRepository.findByNameLike(name);
-        return client.orElse(null);
+        return client.orElseThrow(()-> new BusinessRuleException("Client not found"));
     }
 
     @Override
@@ -32,19 +33,19 @@ public class ClientServiceImpl implements ClientService {
     @Override
     public List<Client> findByName(String name) {
         Optional<List<Client>> clients = clientRepository.findByName(name);
-        return clients.orElse(null);
+        return clients.orElseThrow(()-> new BusinessRuleException("Client not found"));
     }
 
     @Override
     public List<Client> findAll() {
         Optional<List<Client>> clients = Optional.ofNullable(clientRepository.findAll());
-        return clients.orElse(null);
+        return clients.orElseThrow(()-> new BusinessRuleException("Client not found"));
     }
 
     @Override
     public Client findClientFetchOrderItem(Integer id) {
         Optional<Client> client = clientRepository.findClientFetchOrderItem(id);
-        return client.orElse(null);
+        return client.orElseThrow(()-> new BusinessRuleException("Client not found"));
     }
 
     @Override
