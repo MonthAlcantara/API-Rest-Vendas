@@ -6,6 +6,7 @@ import io.github.monthalcantara.dto.response.ItemResponseDTO;
 import io.github.monthalcantara.dto.response.OrderResponseDTO;
 import io.github.monthalcantara.enums.OrderStatus.OrderStatus;
 import io.github.monthalcantara.exception.BusinessRuleException;
+import io.github.monthalcantara.exception.OrderNotFoundException;
 import io.github.monthalcantara.model.Client;
 import io.github.monthalcantara.model.Item;
 import io.github.monthalcantara.model.OrderItem;
@@ -64,7 +65,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public void deleteById(Integer id) {
-orderRepository.deleteById(id);
+        orderRepository.deleteById(id);
     }
 
     @Override
@@ -116,7 +117,7 @@ orderRepository.deleteById(id);
             Integer idOrder = order.getId();
             orderItem.setId(idOrder);
             return orderRepository.save(orderItem);
-            }).orElseThrow(()-> new BusinessRuleException("Order not found"));
+        }).orElseThrow(() -> new BusinessRuleException("Order not found"));
     }
 
     @Override
@@ -156,6 +157,7 @@ orderRepository.deleteById(id);
                 .build();
 
     }
+
     public List<OrderResponseDTO> convertListOrder(List<OrderItem> order) {
         List<OrderResponseDTO> orderResponseDTOList = new ArrayList<>();
         order.stream().map(orderItem -> {
@@ -168,9 +170,19 @@ orderRepository.deleteById(id);
                     .items(convertToItemDTO(orderItem.getItems()))
                     .total(orderItem.getTotal())
                     .build()
-);
+            );
         }).collect(Collectors.toList());
         return orderResponseDTOList;
+    }
+
+    @Override
+    public void updateStatus(Integer id, OrderStatus status) {
+        orderRepository.findById(id)
+                .map(orderItem -> {
+                    orderItem.setStatus(status);
+                    return orderRepository.save(orderItem);
+                })
+                .orElseThrow(() -> new OrderNotFoundException());
     }
 
     public List<ItemResponseDTO> convertToItemDTO(List<Item> items) {
