@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 
 @Data
@@ -17,6 +18,8 @@ public class OrderResponseDTO {
     private Integer code;
 
     private String cpf;
+
+    private LocalDate date;
 
     private String clientName;
 

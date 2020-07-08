@@ -1,5 +1,6 @@
 package io.github.monthalcantara.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.github.monthalcantara.enums.OrderStatus.OrderStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -25,6 +26,7 @@ public class OrderItem {
 
     @ManyToOne
     @JoinColumn(name = "cliente_id")
+    @JsonIgnore
     private Client client;
 
     @CreatedDate
