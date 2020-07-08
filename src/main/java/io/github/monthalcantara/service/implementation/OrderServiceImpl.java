@@ -4,6 +4,7 @@ import io.github.monthalcantara.dto.request.OrderDTO;
 import io.github.monthalcantara.dto.request.ItemDTO;
 import io.github.monthalcantara.dto.response.ItemResponseDTO;
 import io.github.monthalcantara.dto.response.OrderResponseDTO;
+import io.github.monthalcantara.enums.OrderStatus.OrderStatus;
 import io.github.monthalcantara.exception.BusinessRuleException;
 import io.github.monthalcantara.model.Client;
 import io.github.monthalcantara.model.Item;
@@ -75,6 +76,7 @@ orderRepository.deleteById(id);
 
         OrderItem build = OrderItem.builder()
                 .client(client)
+                .status(OrderStatus.DONE)
                 .date(LocalDate.now())
                 .total(orderItem.getTotal())
                 .build();
@@ -146,6 +148,7 @@ orderRepository.deleteById(id);
         return new OrderResponseDTO()
                 .builder().clientName(order.getClient().getName())
                 .code(order.getId())
+                .status(order.getStatus().name())
                 .cpf(order.getClient().getCpf())
                 .items(convertToItemDTO(order.getItems()))
                 .total(order.getTotal())
@@ -158,6 +161,7 @@ orderRepository.deleteById(id);
             return orderResponseDTOList.add(new OrderResponseDTO()
                     .builder().clientName(orderItem.getClient().getName())
                     .code(orderItem.getId())
+                    .status(orderItem.getStatus().name())
                     .cpf(orderItem.getClient().getCpf())
                     .items(convertToItemDTO(orderItem.getItems()))
                     .total(orderItem.getTotal())

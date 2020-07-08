@@ -1,10 +1,7 @@
 package io.github.monthalcantara.endpoint;
 
 import io.github.monthalcantara.dto.request.OrderDTO;
-import io.github.monthalcantara.dto.response.ItemResponseDTO;
-import io.github.monthalcantara.dto.response.OrderResponseDTO;
 import io.github.monthalcantara.exception.BusinessRuleException;
-import io.github.monthalcantara.model.Item;
 import io.github.monthalcantara.model.OrderItem;
 import io.github.monthalcantara.service.interfaces.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,14 +9,11 @@ import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(value = "/order")

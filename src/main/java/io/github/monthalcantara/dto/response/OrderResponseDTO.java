@@ -22,6 +22,8 @@ public class OrderResponseDTO {
 
     private BigDecimal total;
 
+    private String status;
+
     private List<ItemResponseDTO> items;
 
 }

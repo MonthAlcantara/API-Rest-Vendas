@@ -1,5 +1,6 @@
 package io.github.monthalcantara.model;
 
+import io.github.monthalcantara.enums.OrderStatus.OrderStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -31,6 +32,9 @@ public class OrderItem {
 
     @Column(precision = 20, scale = 2)
     private BigDecimal total;
+
+    @Enumerated(EnumType.STRING)
+    private OrderStatus status;
 
     @OneToMany(mappedBy = "orderItem")
     private List<Item> items;
