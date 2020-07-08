@@ -22,6 +22,7 @@ import org.springframework.util.CollectionUtils;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -151,8 +152,22 @@ orderRepository.deleteById(id);
                 .build();
 
     }
+    public List<OrderResponseDTO> convertListOrder(List<OrderItem> order) {
+        List<OrderResponseDTO> orderResponseDTOList = new ArrayList<>();
+        order.stream().map(orderItem -> {
+            return orderResponseDTOList.add(new OrderResponseDTO()
+                    .builder().clientName(orderItem.getClient().getName())
+                    .code(orderItem.getId())
+                    .cpf(orderItem.getClient().getCpf())
+                    .items(convertToItemDTO(orderItem.getItems()))
+                    .total(orderItem.getTotal())
+                    .build()
+);
+        }).collect(Collectors.toList());
+        return orderResponseDTOList;
+    }
 
-    private List<ItemResponseDTO> convertToItemDTO(List<Item> items) {
+    public List<ItemResponseDTO> convertToItemDTO(List<Item> items) {
         if (CollectionUtils.isEmpty(items)) {
             return Collections.emptyList();
         }

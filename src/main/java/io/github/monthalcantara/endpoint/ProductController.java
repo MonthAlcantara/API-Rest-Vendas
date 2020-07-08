@@ -22,7 +22,6 @@ public class ProductController {
     ProductService productService;
 
     @GetMapping
-    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity findAll(Product filter) {
         ExampleMatcher matcher = ExampleMatcher
                 .matching()
@@ -80,10 +79,10 @@ public class ProductController {
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public void deleteById(@PathVariable Integer id) {
-        if(productService.findById(id).isPresent()){
+        if (productService.findById(id).isPresent()) {
             productService.deleteById(id);
         }
-        throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Product not found");
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found");
     }
 
     @PostMapping

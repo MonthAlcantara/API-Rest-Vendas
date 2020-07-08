@@ -1,5 +1,6 @@
 package io.github.monthalcantara.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -20,6 +21,7 @@ public class Item {
 
     @ManyToOne
     @JoinColumn(name = "orderItem_id")
+    @JsonIgnore
     private OrderItem orderItem;
 
     @ManyToOne

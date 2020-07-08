@@ -35,7 +35,7 @@ public class OrderController {
                 .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING);
         Example example = Example.of(orderItem, matcher);
         List<OrderItem> orderItems = orderService.findAll(example);
-        return new ResponseEntity(orderItems, HttpStatus.OK);
+        return new ResponseEntity(orderService.convertListOrder(orderItems), HttpStatus.OK);
     }
 
     @GetMapping("/client/{id}")
