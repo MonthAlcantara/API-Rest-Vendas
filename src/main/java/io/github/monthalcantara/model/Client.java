@@ -1,5 +1,6 @@
 package io.github.monthalcantara.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -24,9 +25,16 @@ public class Client {
     private String name;
 
     @Column(length = 11)
+    @NotEmpty(message = "CPF field is required")
     @CPF(message = "CPF invalid")
     private String cpf;
 
-    @OneToMany(mappedBy = "client")
+    @OneToMany(mappedBy = "client", fetch = FetchType.LAZY)
+    @JsonIgnore
     private List<OrderItem> orderItems;
+
+    public Client(Integer id, String name){
+        this.id = id;
+        this.name = name;
+    }
 }

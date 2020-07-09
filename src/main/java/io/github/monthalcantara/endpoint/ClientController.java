@@ -60,7 +60,7 @@ public class ClientController {
     }
 
     @PostMapping
-    public ResponseEntity<Client> save(@RequestBody Client client) {
+    public ResponseEntity<Client> save(@RequestBody @Valid Client client) {
         return new ResponseEntity<>(clientService.save(client), HttpStatus.CREATED);
     }
 
