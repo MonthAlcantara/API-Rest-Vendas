@@ -12,7 +12,7 @@ import java.lang.annotation.Target;
 @Constraint(validatedBy = NotEmptyListValidator.class)
 public @interface NotEmptyList {
 
-    String message() default "The list don´t be empty";
+    String message() default "The list cannot be empty.";
 
     Class<?>[] groups() default {};
 
