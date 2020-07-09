@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,7 +26,7 @@ public class ClientController {
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public Client updateById(@PathVariable Integer id,
-                                     @RequestBody Client client) {
+                                     @RequestBody @Valid Client client) {
         return clientService.findById(id)
                 .map(c -> {
                     client.setId(c.getId());
