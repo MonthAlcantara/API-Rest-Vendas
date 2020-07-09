@@ -1,7 +1,7 @@
 package io.github.monthalcantara.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import io.github.monthalcantara.enums.OrderStatus.OrderStatus;
+import io.github.monthalcantara.enums.OrderStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

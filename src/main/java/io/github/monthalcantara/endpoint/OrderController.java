@@ -2,7 +2,7 @@ package io.github.monthalcantara.endpoint;
 
 import io.github.monthalcantara.dto.request.OrderDTO;
 import io.github.monthalcantara.dto.request.UpdateOrderStatusDTO;
-import io.github.monthalcantara.enums.OrderStatus.OrderStatus;
+import io.github.monthalcantara.enums.OrderStatus;
 import io.github.monthalcantara.exception.BusinessRuleException;
 import io.github.monthalcantara.model.OrderItem;
 import io.github.monthalcantara.service.interfaces.OrderService;

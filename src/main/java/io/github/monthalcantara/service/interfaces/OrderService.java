@@ -3,7 +3,7 @@ package io.github.monthalcantara.service.interfaces;
 import io.github.monthalcantara.dto.request.OrderDTO;
 import io.github.monthalcantara.dto.response.ItemResponseDTO;
 import io.github.monthalcantara.dto.response.OrderResponseDTO;
-import io.github.monthalcantara.enums.OrderStatus.OrderStatus;
+import io.github.monthalcantara.enums.OrderStatus;
 import io.github.monthalcantara.model.Item;
 import io.github.monthalcantara.model.OrderItem;
 import org.springframework.data.domain.Example;

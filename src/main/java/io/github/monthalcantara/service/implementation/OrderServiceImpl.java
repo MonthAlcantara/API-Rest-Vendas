@@ -4,7 +4,7 @@ import io.github.monthalcantara.dto.request.OrderDTO;
 import io.github.monthalcantara.dto.request.ItemDTO;
 import io.github.monthalcantara.dto.response.ItemResponseDTO;
 import io.github.monthalcantara.dto.response.OrderResponseDTO;
-import io.github.monthalcantara.enums.OrderStatus.OrderStatus;
+import io.github.monthalcantara.enums.OrderStatus;
 import io.github.monthalcantara.exception.BusinessRuleException;
 import io.github.monthalcantara.exception.OrderNotFoundException;
 import io.github.monthalcantara.model.Client;
