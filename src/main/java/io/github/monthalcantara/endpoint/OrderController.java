@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping(value = "/order")
+@RequestMapping(value = "/api/orders")
 public class OrderController {
     @Autowired
     OrderService orderService;

@@ -17,7 +17,7 @@ import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(value = "/client")
+@RequestMapping(value = "/api/clients")
 public class ClientController {
 
     @Autowired
