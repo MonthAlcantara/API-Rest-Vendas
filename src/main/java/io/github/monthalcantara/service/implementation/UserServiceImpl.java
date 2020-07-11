@@ -1,5 +1,6 @@
 package io.github.monthalcantara.service.implementation;
 
+import io.github.monthalcantara.exception.InvalidPasswordException;
 import io.github.monthalcantara.model.UserLogin;
 import io.github.monthalcantara.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,15 @@ public class UserServiceImpl implements UserDetailsService {
 
     @Autowired
     private UserRepository repository;
+
+    public UserDetails authenticate(UserLogin userLogin){
+        UserDetails userDetails = loadUserByUsername(userLogin.getLogin());
+        boolean isEqual = passwordEncoder.matches(userLogin.getPassword(), userDetails.getPassword());
+        if(isEqual){
+            return userDetails;
+        }
+        throw new InvalidPasswordException();
+    }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
