@@ -1,4 +1,4 @@
-package io.github.monthalcantara;
+package io.github.monthalcantara.security.jwt;
 
 import io.github.monthalcantara.model.UserLogin;
 import io.jsonwebtoken.Claims;
