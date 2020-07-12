@@ -66,7 +66,7 @@ public class ClientController {
             @ApiResponse(code = 200, message = "Client found successfully"),
             @ApiResponse(code = 404, message = "Client not found by the given id"),
     })
-    public ResponseEntity findById(@PathVariable @ApiParam("Client Id") Integer id) {
+    public ResponseEntity findById(@PathVariable Integer id) {
         Optional<Client> client = clientService.findById(id);
         return client.map(value -> new ResponseEntity(value, HttpStatus.OK)).orElseGet(() -> ResponseEntity.notFound().build());
     }
@@ -77,7 +77,7 @@ public class ClientController {
             @ApiResponse(code = 200, message = "Client found successfully"),
             @ApiResponse(code = 404, message = "Client not found by the given name"),
     })
-    public ResponseEntity findByName(@PathVariable @ApiParam("Client name") String name) {
+    public ResponseEntity findByName(@PathVariable String name) {
         Optional<List<Client>> clients = Optional.of(clientService.findByName(name));
         return clients.map(clientList -> new ResponseEntity(clientList, HttpStatus.OK))
                 .orElseGet(() -> ResponseEntity.notFound()
@@ -100,7 +100,7 @@ public class ClientController {
             @ApiResponse(code = 200, message = "Client found successfully"),
             @ApiResponse(code = 404, message = "Client not found by the given id"),
     })
-    public ResponseEntity deleteById(@PathVariable @ApiParam("Client Id") Integer id) {
+    public ResponseEntity deleteById(@PathVariable Integer id) {
         if (clientService.findById(id).isPresent()) {
             clientService.deleteById(id);
             return ResponseEntity.ok().build();

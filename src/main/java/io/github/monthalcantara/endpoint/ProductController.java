@@ -49,7 +49,7 @@ public class ProductController {
             @ApiResponse(code = 200, message = "Product found successfully"),
             @ApiResponse(code = 404, message = "Product not found by the given ID"),
     })
-    public Product findById(@PathVariable @ApiParam("Product ID") Integer id) {
+    public Product findById(@PathVariable Integer id) {
         return productService.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found"));
     }
@@ -61,7 +61,7 @@ public class ProductController {
             @ApiResponse(code = 200, message = "Product found successfully"),
             @ApiResponse(code = 404, message = "Product not found by the given description"),
     })
-    public String findByDescription(@PathVariable @ApiParam("Product Description") String description) {
+    public String findByDescription(@PathVariable String description) {
         return productService.findByDescription(description)
                 .map(product -> product.getDescription())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found"));
@@ -74,7 +74,7 @@ public class ProductController {
             @ApiResponse(code = 200, message = "Product found successfully"),
             @ApiResponse(code = 404, message = "Product not found by the given ID"),
     })
-    public BigDecimal findPriceById(@PathVariable @ApiParam("Product ID") Integer id) {
+    public BigDecimal findPriceById(@PathVariable Integer id) {
         return productService.findById(id)
                 .map(product -> product.getPrice())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found"));
@@ -87,7 +87,7 @@ public class ProductController {
             @ApiResponse(code = 200, message = "Product found successfully"),
             @ApiResponse(code = 404, message = "Product not found by the given description"),
     })
-    public BigDecimal findPriceByDescription(@PathVariable @ApiParam("Product Description") String description) {
+    public BigDecimal findPriceByDescription(@PathVariable String description) {
         return productService.findByDescription(description)
                 .map(product -> product.getPrice())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found"));
@@ -101,7 +101,7 @@ public class ProductController {
             @ApiResponse(code = 400, message = "Validation Error"),
             @ApiResponse(code = 404, message = "Product not found by the given id"),
     })
-    public void updateById(@PathVariable @ApiParam("Product ID") Integer id, @RequestBody @Valid Product product) {
+    public void updateById(@PathVariable Integer id, @RequestBody @Valid Product product) {
         productService
                 .findById(id)
                 .map(p -> {
@@ -119,7 +119,7 @@ public class ProductController {
             @ApiResponse(code = 200, message = "Product found successfully"),
             @ApiResponse(code = 404, message = "Product not found by the given id"),
     })
-    public void deleteById(@PathVariable @ApiParam("Product ID") Integer id) {
+    public void deleteById(@PathVariable Integer id) {
         if (productService.findById(id).isPresent()) {
             productService.deleteById(id);
         }

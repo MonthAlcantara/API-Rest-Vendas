@@ -50,7 +50,7 @@ public class OrderController {
             @ApiResponse(code = 200, message = "Client found successfully"),
             @ApiResponse(code = 404, message = "Client not found by the given ID"),
     })
-    public ResponseEntity findByClient(@PathVariable @ApiParam("Order Id") Integer id) {
+    public ResponseEntity findByClient(@PathVariable Integer id) {
         Optional<List<OrderItem>> orderItemByClient = orderService.findOrderItemByClient(id);
         return new ResponseEntity(orderItemByClient, HttpStatus.OK);
     }
@@ -61,7 +61,7 @@ public class OrderController {
             @ApiResponse(code = 200, message = "Order found successfully"),
             @ApiResponse(code = 404, message = "Order not found by the given ID"),
     })
-    public ResponseEntity getTotal(@PathVariable @ApiParam("Order Id") Integer id) {
+    public ResponseEntity getTotal(@PathVariable Integer id) {
         BigDecimal priceTotal = orderService.findPriceTotal(id);
         return new ResponseEntity(priceTotal, HttpStatus.OK);
     }
@@ -72,7 +72,7 @@ public class OrderController {
             @ApiResponse(code = 200, message = "Order found successfully"),
             @ApiResponse(code = 404, message = "Order not found by the given ID"),
     })
-    public ResponseEntity getItems(@PathVariable @ApiParam("Order Id") Integer id) {
+    public ResponseEntity getItems(@PathVariable Integer id) {
         return new ResponseEntity(orderService
                 .findById(id)
                 .map(orderItem -> orderItem.getItems()).orElseThrow(() ->
@@ -85,7 +85,7 @@ public class OrderController {
             @ApiResponse(code = 200, message = "Order found successfully"),
             @ApiResponse(code = 404, message = "Order not found by the given ID"),
     })
-    public ResponseEntity findOrderById(@PathVariable @ApiParam("Order Id") Integer id) {
+    public ResponseEntity findOrderById(@PathVariable Integer id) {
         return new ResponseEntity(orderService
                 .findById(id)
                 .map(orderItem -> orderService.convertOrder(orderItem)).orElseThrow(() ->
@@ -113,7 +113,7 @@ public class OrderController {
             @ApiResponse(code = 400, message = "Validation Error"),
             @ApiResponse(code = 404, message = "Order not found by the given id"),
     })
-    void updateStatus(@RequestBody UpdateOrderStatusDTO status, @PathVariable @ApiParam("Order Id") Integer id){
+    void updateStatus(@RequestBody UpdateOrderStatusDTO status, @PathVariable Integer id){
         String newStatus = status.getNewStatus();
         orderService.updateStatus(id, OrderStatus.valueOf(newStatus));
 
@@ -126,7 +126,7 @@ public class OrderController {
             @ApiResponse(code = 200, message = "Order found successfully"),
             @ApiResponse(code = 404, message = "Order not found by the given id"),
     })
-    public void deleteOrder(@PathVariable @ApiParam("Order Id") Integer id) {
+    public void deleteOrder(@PathVariable Integer id) {
         orderService.deleteById(id);
     }
 
@@ -137,7 +137,7 @@ public class OrderController {
             @ApiResponse(code = 400, message = "Validation Error"),
             @ApiResponse(code = 404, message = "Order not found by the given id"),
     })
-    public ResponseEntity update(@PathVariable @ApiParam("Order Id") Integer id, @RequestBody OrderItem orderItem) {
+    public ResponseEntity update(@PathVariable Integer id, @RequestBody OrderItem orderItem) {
         return new ResponseEntity(orderService.findById(id).map(order -> {
             Integer idOrder = order.getId();
             orderItem.setId(idOrder);
