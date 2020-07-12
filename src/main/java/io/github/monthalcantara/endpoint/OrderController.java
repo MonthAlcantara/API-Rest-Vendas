@@ -6,6 +6,10 @@ import io.github.monthalcantara.enums.OrderStatus;
 import io.github.monthalcantara.exception.BusinessRuleException;
 import io.github.monthalcantara.model.OrderItem;
 import io.github.monthalcantara.service.interfaces.OrderService;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
@@ -25,6 +29,11 @@ public class OrderController {
     OrderService orderService;
 
     @GetMapping
+    @ApiOperation("Seeks all orders")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Order found successfully"),
+            @ApiResponse(code = 404, message = "Order not found"),
+    })
     public ResponseEntity findAll(OrderItem orderItem) {
         ExampleMatcher matcher = ExampleMatcher
                 .matching()
@@ -36,19 +45,34 @@ public class OrderController {
     }
 
     @GetMapping("/client/{id}")
-    public ResponseEntity findByClient(@PathVariable Integer id) {
+    @ApiOperation("Search for a order by client ID")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Client found successfully"),
+            @ApiResponse(code = 404, message = "Client not found by the given ID"),
+    })
+    public ResponseEntity findByClient(@PathVariable @ApiParam("Order Id") Integer id) {
         Optional<List<OrderItem>> orderItemByClient = orderService.findOrderItemByClient(id);
         return new ResponseEntity(orderItemByClient, HttpStatus.OK);
     }
 
     @GetMapping("/total/{id}")
-    public ResponseEntity getTotal(@PathVariable Integer id) {
+    @ApiOperation("Search for the total order value by ID")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Order found successfully"),
+            @ApiResponse(code = 404, message = "Order not found by the given ID"),
+    })
+    public ResponseEntity getTotal(@PathVariable @ApiParam("Order Id") Integer id) {
         BigDecimal priceTotal = orderService.findPriceTotal(id);
         return new ResponseEntity(priceTotal, HttpStatus.OK);
     }
 
     @GetMapping("/item/{id}")
-    public ResponseEntity getItems(@PathVariable Integer id) {
+    @ApiOperation("Fetch order items by id")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Order found successfully"),
+            @ApiResponse(code = 404, message = "Order not found by the given ID"),
+    })
+    public ResponseEntity getItems(@PathVariable @ApiParam("Order Id") Integer id) {
         return new ResponseEntity(orderService
                 .findById(id)
                 .map(orderItem -> orderItem.getItems()).orElseThrow(() ->
@@ -56,7 +80,12 @@ public class OrderController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity findOrderById(@PathVariable Integer id) {
+    @ApiOperation("Search order by ID")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Order found successfully"),
+            @ApiResponse(code = 404, message = "Order not found by the given ID"),
+    })
+    public ResponseEntity findOrderById(@PathVariable @ApiParam("Order Id") Integer id) {
         return new ResponseEntity(orderService
                 .findById(id)
                 .map(orderItem -> orderService.convertOrder(orderItem)).orElseThrow(() ->
@@ -65,14 +94,26 @@ public class OrderController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
+    @ApiOperation("Save a new order")
+    @ApiResponses({
+            @ApiResponse(code = 201, message = "Order saved successfully"),
+            @ApiResponse(code = 400, message = "Validation Error"),
+    })
     public Integer save(@RequestBody @Valid OrderDTO orderItem) {
 
         return orderService.save(orderItem).getId();
 
     }
+
     @PatchMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    void updateStatus(@RequestBody UpdateOrderStatusDTO status, @PathVariable Integer id){
+    @ApiOperation("Updated a order by id")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Order updated successfully"),
+            @ApiResponse(code = 400, message = "Validation Error"),
+            @ApiResponse(code = 404, message = "Order not found by the given id"),
+    })
+    void updateStatus(@RequestBody UpdateOrderStatusDTO status, @PathVariable @ApiParam("Order Id") Integer id){
         String newStatus = status.getNewStatus();
         orderService.updateStatus(id, OrderStatus.valueOf(newStatus));
 
@@ -80,12 +121,23 @@ public class OrderController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public void deleteOrder(@PathVariable Integer id) {
+    @ApiOperation("Delete a order by ID")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Order found successfully"),
+            @ApiResponse(code = 404, message = "Order not found by the given id"),
+    })
+    public void deleteOrder(@PathVariable @ApiParam("Order Id") Integer id) {
         orderService.deleteById(id);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity update(@PathVariable Integer id, @RequestBody OrderItem orderItem) {
+    @ApiOperation("Updated a order by id")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Order updated successfully"),
+            @ApiResponse(code = 400, message = "Validation Error"),
+            @ApiResponse(code = 404, message = "Order not found by the given id"),
+    })
+    public ResponseEntity update(@PathVariable @ApiParam("Order Id") Integer id, @RequestBody OrderItem orderItem) {
         return new ResponseEntity(orderService.findById(id).map(order -> {
             Integer idOrder = order.getId();
             orderItem.setId(idOrder);

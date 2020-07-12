@@ -6,6 +6,10 @@ import io.github.monthalcantara.exception.InvalidPasswordException;
 import io.github.monthalcantara.model.UserLogin;
 import io.github.monthalcantara.security.jwt.JwtService;
 import io.github.monthalcantara.service.implementation.UserServiceImpl;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,6 +27,7 @@ import javax.validation.Valid;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/users")
+@Api("Api Users")
 public class UserController {
     @Autowired
     private UserServiceImpl userService;
@@ -30,12 +35,22 @@ public class UserController {
     private JwtService jwtService;
 
     @PostMapping
+    @ApiOperation("Save a new user")
+    @ApiResponses({
+            @ApiResponse(code = 201, message = "Client saved successfully"),
+            @ApiResponse(code = 400, message = "Validation Error"),
+    })
     public ResponseEntity save(@RequestBody @Valid UserLogin userLogin) {
         return new ResponseEntity(userService.save(userLogin), HttpStatus.CREATED);
     }
 
     @PostMapping("/auth")
-    public TokenDTO authenticate(@RequestBody CredentialsRequestDTO userLogin) {
+    @ApiOperation("Generates a token")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Token successfully created"),
+            @ApiResponse(code = 400, message = "Validation Error"),
+    })
+    public TokenDTO authenticate(@RequestBody @Valid CredentialsRequestDTO userLogin) {
         try {
             UserLogin user = UserLogin.builder()
                     .login(userLogin.getLogin())
@@ -43,7 +58,7 @@ public class UserController {
                     .build();
             UserDetails authenticate = userService.authenticate(user);
             String token = jwtService.createToken(user);
-            return new TokenDTO(userLogin.getLogin(),token);
+            return new TokenDTO(userLogin.getLogin(), token);
 
         } catch (UsernameNotFoundException | InvalidPasswordException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
