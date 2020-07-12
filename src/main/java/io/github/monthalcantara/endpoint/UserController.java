@@ -21,8 +21,8 @@ import org.springframework.web.server.ResponseStatusException;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping("/api/users")
 @RequiredArgsConstructor
+@RequestMapping("/api/users")
 public class UserController {
     @Autowired
     private UserServiceImpl userService;
@@ -47,7 +47,6 @@ public class UserController {
 
         } catch (UsernameNotFoundException | InvalidPasswordException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
-
         }
     }
 }
