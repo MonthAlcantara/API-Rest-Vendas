@@ -1,9 +1,8 @@
-package io.github.monthalcantara.endpoint;
+package io.github.monthalcantara.controller;
 
 import io.github.monthalcantara.model.Product;
 import io.github.monthalcantara.service.interfaces.ProductService;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,8 +15,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
 import java.math.BigDecimal;
-import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping(value = "/api/products")

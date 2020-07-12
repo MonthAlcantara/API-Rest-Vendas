@@ -1,4 +1,4 @@
-package io.github.monthalcantara.endpoint;
+package io.github.monthalcantara.controller;
 
 import io.github.monthalcantara.dto.request.CredentialsRequestDTO;
 import io.github.monthalcantara.dto.response.TokenDTO;

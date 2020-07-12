@@ -1,4 +1,4 @@
-package io.github.monthalcantara.endpoint;
+package io.github.monthalcantara.controller;
 
 import io.github.monthalcantara.model.Client;
 import io.github.monthalcantara.service.interfaces.ClientService;

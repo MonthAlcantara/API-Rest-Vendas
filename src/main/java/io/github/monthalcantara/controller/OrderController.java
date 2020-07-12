@@ -1,4 +1,4 @@
-package io.github.monthalcantara.endpoint;
+package io.github.monthalcantara.controller;
 
 import io.github.monthalcantara.dto.request.OrderDTO;
 import io.github.monthalcantara.dto.request.UpdateOrderStatusDTO;
@@ -7,7 +7,6 @@ import io.github.monthalcantara.exception.BusinessRuleException;
 import io.github.monthalcantara.model.OrderItem;
 import io.github.monthalcantara.service.interfaces.OrderService;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
