@@ -40,8 +40,8 @@ public class UserController {
             @ApiResponse(code = 201, message = "Client saved successfully"),
             @ApiResponse(code = 400, message = "Validation Error"),
     })
-    public ResponseEntity save(@RequestBody @Valid UserLogin userLogin) {
-        return new ResponseEntity(userService.save(userLogin), HttpStatus.CREATED);
+    public ResponseEntity<UserLogin> save(@RequestBody @Valid UserLogin userLogin) {
+        return new ResponseEntity<>(userService.save(userLogin), HttpStatus.CREATED);
     }
 
     @PostMapping("/auth")

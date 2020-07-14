@@ -49,7 +49,7 @@ public class ClientController {
             @ApiResponse(code = 200, message = "Clients found successfully"),
             @ApiResponse(code = 404, message = "Clients not found"),
     })
-    public ResponseEntity findAll(Client filter) {
+    public ResponseEntity<List<Client>> findAll(Client filter) {
         ExampleMatcher matcher = ExampleMatcher
                 .matching()
                 .withIgnoreCase()
@@ -107,6 +107,5 @@ public class ClientController {
         }
         return ResponseEntity.notFound().build();
     }
-
 }
 
