@@ -2,6 +2,8 @@ package io.github.monthalcantara.service.interfaces;
 
 import io.github.monthalcantara.model.Client;
 import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Optional;
@@ -12,9 +14,7 @@ public interface ClientService {
 
     Optional<Client> findById(Integer id);
 
-    List<Client> findByName(String name);
-
-    List<Client> findAll();
+    Page<Client> findByName(String name, Pageable pageable);
 
     Client findClientFetchOrderItem(Integer id);
 
@@ -28,7 +28,7 @@ public interface ClientService {
 
     Client updateById(Integer id, Client client);
 
-    List<Client> findAll(Example example);
+    Page<Client> findAll(Example example, Pageable pageable);
 
 
 }

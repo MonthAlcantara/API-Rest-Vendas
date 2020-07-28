@@ -5,9 +5,7 @@ import io.github.monthalcantara.model.Client;
 import io.github.monthalcantara.repository.ClientRepository;
 import io.github.monthalcantara.service.interfaces.ClientService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Example;
-import org.springframework.data.domain.ExampleMatcher;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -31,14 +29,14 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public List<Client> findByName(String name) {
-        Optional<List<Client>> clients = clientRepository.findByName(name);
+    public Page<Client> findByName(String name, Pageable pageable) {
+        Optional<Page<Client>> clients = clientRepository.findByName(name, pageable);
         return clients.orElseThrow(()-> new BusinessRuleException("Client not found"));
     }
 
     @Override
-    public List<Client> findAll() {
-        Optional<List<Client>> clients = Optional.ofNullable(clientRepository.findAll());
+    public Page<Client> findAll(Example example, Pageable pageable) {
+        Optional<Page<Client>> clients = Optional.ofNullable(clientRepository.findAll(example, pageable));
         return clients.orElseThrow(()-> new BusinessRuleException("Client not found"));
     }
 

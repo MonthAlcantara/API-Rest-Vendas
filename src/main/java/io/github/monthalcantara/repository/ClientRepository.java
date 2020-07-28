@@ -1,6 +1,9 @@
 package io.github.monthalcantara.repository;
 
 import io.github.monthalcantara.model.Client;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -11,7 +14,7 @@ import java.util.Optional;
 
 public interface ClientRepository extends JpaRepository<Client, Integer> {
 
-    Optional<List<Client>> findByName(String name);
+    Optional<Page<Client>> findByName(String name, Pageable pageable);
 
     void deleteByName(String name);
 
@@ -24,6 +27,6 @@ public interface ClientRepository extends JpaRepository<Client, Integer> {
 
     Optional<Client> findById(Integer id);
 
-    List<Client> findAll();
+    Page<Client> findAll(Example example, Pageable pageable);
 
 }

@@ -7,6 +7,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -44,19 +47,19 @@ public class ClientController {
     }
 
     @GetMapping
-    @ApiOperation("Seeks all clients")
+    @ApiOperation("Search all clients")
     @ApiResponses({
             @ApiResponse(code = 200, message = "Clients found successfully"),
             @ApiResponse(code = 404, message = "Clients not found"),
     })
-    public ResponseEntity<List<Client>> findAll(Client filter) {
+    public ResponseEntity<Page<Client>> findAll(@PageableDefault(size = 5)  Pageable pageable, Client filter) {
         ExampleMatcher matcher = ExampleMatcher
                 .matching()
                 .withIgnoreCase()
                 .withStringMatcher(
                         ExampleMatcher.StringMatcher.CONTAINING);
         Example example = Example.of(filter, matcher);
-        List<Client> clients = clientService.findAll(example);
+        Page<Client> clients = clientService.findAll(example, pageable);
         return ResponseEntity.ok(clients);
     }
 
@@ -77,8 +80,8 @@ public class ClientController {
             @ApiResponse(code = 200, message = "Client found successfully"),
             @ApiResponse(code = 404, message = "Client not found by the given name"),
     })
-    public ResponseEntity findByName(@PathVariable String name) {
-        Optional<List<Client>> clients = Optional.of(clientService.findByName(name));
+    public ResponseEntity<Page<Client>> findByName(@PathVariable String name, @PageableDefault(size = 5) Pageable pageable) {
+        Optional<Page<Client>> clients = Optional.of(clientService.findByName(name, pageable));
         return clients.map(clientList -> new ResponseEntity(clientList, HttpStatus.OK))
                 .orElseGet(() -> ResponseEntity.notFound()
                         .build());
