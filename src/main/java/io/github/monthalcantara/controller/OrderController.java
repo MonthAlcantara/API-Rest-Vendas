@@ -14,6 +14,9 @@ import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -35,14 +38,14 @@ public class OrderController {
             @ApiResponse(code = 200, message = "Order found successfully"),
             @ApiResponse(code = 404, message = "Order not found"),
     })
-    public ResponseEntity<List<OrderResponseDTO>> findAll(OrderItem orderItem) {
+    public ResponseEntity<Page<OrderResponseDTO>> findAll(OrderItem orderItem,@PageableDefault(size = 5) Pageable pageable) {
         ExampleMatcher matcher = ExampleMatcher
                 .matching()
                 .withIgnoreCase()
                 .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING);
         Example example = Example.of(orderItem, matcher);
-        List<OrderItem> orderItems = orderService.findAll(example);
-        return new ResponseEntity<>(orderService.convertListOrder(orderItems), HttpStatus.OK);
+        Page<OrderItem> orderItems = orderService.findAll(example, pageable);
+        return new ResponseEntity<Page<OrderResponseDTO>>(orderService.convertListOrder(orderItems), HttpStatus.OK);
     }
 
     @GetMapping("/client/{id}")
@@ -51,8 +54,8 @@ public class OrderController {
             @ApiResponse(code = 200, message = "Client found successfully"),
             @ApiResponse(code = 404, message = "Client not found by the given ID"),
     })
-    public ResponseEntity<List<OrderItem>> findByClient(@PathVariable Integer id) {
-        Optional<List<OrderItem>> orderItemByClient = orderService.findOrderItemByClient(id);
+    public ResponseEntity<Page<OrderItem>> findByClient(@PathVariable Integer id, @PageableDefault(size = 5) Pageable pageable) {
+        Optional<Page<OrderItem>> orderItemByClient = orderService.findOrderItemByClient(id, pageable);
         return new ResponseEntity<>(orderItemByClient.orElseThrow(() -> new BusinessRuleException("Client not found by the given ID")), HttpStatus.OK);
     }
 

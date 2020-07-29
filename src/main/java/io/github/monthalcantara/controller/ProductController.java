@@ -24,7 +24,7 @@ public class ProductController {
     ProductService productService;
 
     @GetMapping
-    @ApiOperation("Seeks all products")
+    @ApiOperation("Search all products")
     @ApiResponses({
             @ApiResponse(code = 200, message = "Product found successfully"),
             @ApiResponse(code = 404, message = "Product not found"),

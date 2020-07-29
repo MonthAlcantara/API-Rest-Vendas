@@ -7,6 +7,8 @@ import io.github.monthalcantara.enums.OrderStatus;
 import io.github.monthalcantara.model.Item;
 import io.github.monthalcantara.model.OrderItem;
 import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -17,9 +19,9 @@ public interface OrderService {
 
     Optional<OrderItem> findById(Integer id);
 
-    Optional<List<OrderItem>> findAll();
+    Optional<Page<OrderItem>> findAll(Pageable pageable);
 
-    Optional<List<OrderItem>> findOrderItemByClient(Integer id);
+    Optional<Page<OrderItem>> findOrderItemByClient(Integer id, Pageable pageable);
 
     void deleteById(Integer id);
 
@@ -27,7 +29,7 @@ public interface OrderService {
 
     OrderItem save(OrderItem orderItem);
 
-    List<OrderItem> findAll(Example example);
+    Page<OrderItem> findAll(Example example, Pageable pageable);
 
     BigDecimal findPriceTotal(Integer id);
 
@@ -39,7 +41,7 @@ public interface OrderService {
 
     List<ItemResponseDTO> convertToItemDTO(List<Item> items);
 
-    List<OrderResponseDTO> convertListOrder(List<OrderItem> order);
+    Page<OrderResponseDTO> convertListOrder(Page<OrderItem> order);
 
     void updateStatus(Integer id, OrderStatus status);
 }

@@ -18,6 +18,9 @@ import io.github.monthalcantara.service.interfaces.OrderService;
 import io.github.monthalcantara.service.interfaces.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -51,16 +54,16 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Optional<List<OrderItem>> findAll() {
-        return Optional.empty();
+    public Optional<Page<OrderItem>> findAll(Pageable pageable) {
+        return Optional.of(orderRepository.findAll(pageable));
     }
 
     @Override
-    public Optional<List<OrderItem>> findOrderItemByClient(Integer id) {
+    public Optional<Page<OrderItem>> findOrderItemByClient(Integer id, Pageable pageable) {
         Client client = clientService.findById(id)
                 .orElseThrow(() ->
                         new BusinessRuleException("Client code not found"));
-        return orderRepository.findByClient(client);
+        return orderRepository.findByClient(client, pageable);
     }
 
     @Override
@@ -97,9 +100,9 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<OrderItem> findAll(Example example) {
+    public Page<OrderItem> findAll(Example example, Pageable pageable) {
 
-        return orderRepository.findAll();
+        return orderRepository.findAll(pageable);
     }
 
     @Override
@@ -158,7 +161,7 @@ public class OrderServiceImpl implements OrderService {
 
     }
 
-    public List<OrderResponseDTO> convertListOrder(List<OrderItem> order) {
+    public Page<OrderResponseDTO> convertListOrder(Page<OrderItem> order) {
         List<OrderResponseDTO> orderResponseDTOList = new ArrayList<>();
         order.stream().map(orderItem -> {
             return orderResponseDTOList.add(new OrderResponseDTO()
@@ -172,7 +175,7 @@ public class OrderServiceImpl implements OrderService {
                     .build()
             );
         }).collect(Collectors.toList());
-        return orderResponseDTOList;
+        return new PageImpl<>(orderResponseDTOList);
     }
 
     @Override
