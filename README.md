@@ -1,4 +1,4 @@
-# API-Rest-Vendas
+# API-Rest-Vendas [![Build Status](https://travis-ci.com/MonthAlcantara/API-Rest-Central-Erros.svg?branch=master)](https://travis-ci.com/MonthAlcantara/API-Rest-Central-Erros)
 
 Projeto de API Rest, criado com Spring Boot para Cadastro e gerenciamento de produtos, ítens e clientes.
 
