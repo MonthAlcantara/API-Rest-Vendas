@@ -2,12 +2,13 @@ package io.github.monthalcantara.service.implementation;
 
 import io.github.monthalcantara.dto.request.ItemDTO;
 import io.github.monthalcantara.dto.request.OrderDTO;
+import io.github.monthalcantara.dto.response.ClientResponseDTO;
 import io.github.monthalcantara.dto.response.ItemResponseDTO;
 import io.github.monthalcantara.dto.response.OrderResponseDTO;
 import io.github.monthalcantara.enums.OrderStatus;
 import io.github.monthalcantara.exception.BusinessRuleException;
 import io.github.monthalcantara.exception.OrderNotFoundException;
-import io.github.monthalcantara.model.Client;
+import io.github.monthalcantara.mappers.ClientMapper;
 import io.github.monthalcantara.model.Item;
 import io.github.monthalcantara.model.OrderItem;
 import io.github.monthalcantara.model.Product;
@@ -46,6 +47,8 @@ public class OrderServiceImpl implements OrderService {
 
     @Autowired
     ItemService itemService;
+    @Autowired
+    ClientMapper clientMapper;
 
 
     @Override
@@ -60,10 +63,8 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public Optional<Page<OrderItem>> findOrderItemByClient(Integer id, Pageable pageable) {
-        Client client = clientService.findById(id)
-                .orElseThrow(() ->
-                        new BusinessRuleException("Client code not found"));
-        return orderRepository.findByClient(client, pageable);
+        ClientResponseDTO client = clientService.findById(id);
+        return orderRepository.findByClient(clientMapper.clientResponseDTOToClient(client), pageable);
     }
 
     @Override
@@ -75,11 +76,10 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     public OrderItem save(OrderDTO orderItem) {
         Integer idClient = orderItem.getClient();
-        Client client = clientService.findById(idClient)
-                .orElseThrow(() -> new BusinessRuleException("Client code not found"));
+        ClientResponseDTO client = clientService.findById(idClient);
 
         OrderItem build = OrderItem.builder()
-                .client(client)
+                .client(clientMapper.clientResponseDTOToClient(client))
                 .status(OrderStatus.DONE)
                 .date(LocalDate.now())
                 .total(orderItem.getTotal())

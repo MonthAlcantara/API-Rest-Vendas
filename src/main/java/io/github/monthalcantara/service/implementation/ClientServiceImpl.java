@@ -1,6 +1,9 @@
 package io.github.monthalcantara.service.implementation;
 
+import io.github.monthalcantara.dto.request.ClientDTO;
+import io.github.monthalcantara.dto.response.ClientResponseDTO;
 import io.github.monthalcantara.exception.BusinessRuleException;
+import io.github.monthalcantara.mappers.ClientMapper;
 import io.github.monthalcantara.model.Client;
 import io.github.monthalcantara.repository.ClientRepository;
 import io.github.monthalcantara.service.interfaces.ClientService;
@@ -15,35 +18,53 @@ import java.util.Optional;
 public class ClientServiceImpl implements ClientService {
     @Autowired
     ClientRepository clientRepository;
+    @Autowired
+    ClientMapper clientMapper;
+
 
     @Override
-    public Client findByNameLike(String name) {
+    public ClientResponseDTO findByNameLike(String name) {
         Optional<Client> client = clientRepository.findByNameLike(name);
-        return client.orElseThrow(()-> new BusinessRuleException("Client not found"));
+        return client.map(c -> clientMapper.clientToClientResponseDTO(c)).orElseThrow(() -> new BusinessRuleException("Client not found"));
     }
 
     @Override
-    public Optional<Client> findById(Integer id) {
-        Optional<Client> client = clientRepository.findById(id);
-        return client;
+    public ClientResponseDTO findById(Integer id) {
+        Client client = clientExists(id);
+        return clientMapper.clientToClientResponseDTO(client);
     }
 
     @Override
-    public Page<Client> findByName(String name, Pageable pageable) {
+    public Page<ClientResponseDTO> findByName(String name, Pageable pageable) {
         Optional<Page<Client>> clients = clientRepository.findByName(name, pageable);
-        return clients.orElseThrow(()-> new BusinessRuleException("Client not found"));
+        return clients.map(c -> c.map(this::clientToClientResponseDTO)).orElseThrow(() -> new BusinessRuleException("Client not found"));
+    }
+    private ClientResponseDTO clientToClientResponseDTO(Client client){
+        return clientMapper.clientToClientResponseDTO(client);
     }
 
     @Override
-    public Page<Client> findAll(Example example, Pageable pageable) {
+    public Page<ClientResponseDTO> findAll(Example example, Pageable pageable) {
         Optional<Page<Client>> clients = Optional.ofNullable(clientRepository.findAll(example, pageable));
-        return clients.orElseThrow(()-> new BusinessRuleException("Client not found"));
+        return clients.map(c -> c.map(this::clientToClientResponseDTO)).orElseThrow(() -> new BusinessRuleException("Client not found"));
     }
 
     @Override
-    public Client findClientFetchOrderItem(Integer id) {
+    public Page<ClientResponseDTO> findAllByExample(Pageable pageable, ClientDTO clientDTO) {
+      Client filter = clientMapper.clientDTOToClient(clientDTO);
+        ExampleMatcher matcher = ExampleMatcher
+                .matching()
+                .withIgnoreCase()
+                .withStringMatcher(
+                        ExampleMatcher.StringMatcher.CONTAINING);
+        Example example = Example.of(filter, matcher);
+        return findAll(example, pageable);
+    }
+
+    @Override
+    public ClientResponseDTO findClientFetchOrderItem(Integer id) {
         Optional<Client> client = clientRepository.findClientFetchOrderItem(id);
-        return client.orElseThrow(()-> new BusinessRuleException("Client not found"));
+        return client.map(c -> clientMapper.clientToClientResponseDTO(c)).orElseThrow(() -> new BusinessRuleException("Client not found"));
     }
 
     @Override
@@ -52,8 +73,9 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public Client save(Client client) {
-        return clientRepository.save(client);
+    public ClientResponseDTO save(ClientDTO clientDTO) {
+        Client client = clientMapper.clientDTOToClient(clientDTO);
+        return clientMapper.clientToClientResponseDTO(clientRepository.save(client));
     }
 
     @Override
@@ -63,20 +85,28 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public void deleteById(Integer id) {
+        clientExists(id);
         clientRepository.deleteById(id);
     }
 
     @Override
-    public Client updateById(Integer id, Client client) {
+    public ClientResponseDTO updateById(Integer id, ClientDTO clientDTO) {
+        Client client = clientMapper.clientDTOToClient(clientDTO);
         Optional<Client> clientOptional = clientRepository.findById(id);
         if (clientOptional.isPresent()) {
             clientOptional.get().setName(client.getName());
-            return clientRepository.save(clientOptional.get());
+            return clientMapper.clientToClientResponseDTO(clientOptional.get());
         }
-        return clientRepository.save(client);
+        return clientMapper.clientToClientResponseDTO(clientRepository.save(client));
     }
-    public List<Client> findAll(Example example){
+
+    public List<ClientResponseDTO> findAll(Example example) {
+
         return clientRepository.findAll(example);
     }
 
+    private Client clientExists(Integer id) {
+        Optional<Client> client = clientRepository.findById(id);
+        return client.orElseThrow(() -> new BusinessRuleException("Client not found"));
+    }
 }
