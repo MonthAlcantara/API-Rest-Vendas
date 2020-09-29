@@ -1,23 +1,22 @@
 package io.github.monthalcantara.controller;
 
-import io.github.monthalcantara.model.Client;
+import io.github.monthalcantara.dto.request.ClientDTO;
+import io.github.monthalcantara.dto.response.ClientResponseDTO;
 import io.github.monthalcantara.service.interfaces.ClientService;
-import io.swagger.annotations.*;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Example;
-import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
-import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -36,14 +35,10 @@ public class ClientController {
             @ApiResponse(code = 400, message = "Validation Error"),
             @ApiResponse(code = 404, message = "Client not found by the given id"),
     })
-    public Client updateById(@PathVariable Integer id,
-                             @RequestBody @Valid Client client) {
-        return clientService.findById(id)
-                .map(c -> {
-                    client.setId(c.getId());
-                    clientService.save(client);
-                    return client;
-                }).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Client not found"));
+
+    public ClientResponseDTO updateById(@PathVariable Integer id,
+                             @RequestBody @Valid ClientDTO client) {
+        return clientService.updateById(id, client);
     }
 
     @GetMapping
@@ -52,15 +47,9 @@ public class ClientController {
             @ApiResponse(code = 200, message = "Clients found successfully"),
             @ApiResponse(code = 404, message = "Clients not found"),
     })
-    public ResponseEntity<Page<Client>> findAll(@PageableDefault(size = 5)  Pageable pageable, Client filter) {
-        ExampleMatcher matcher = ExampleMatcher
-                .matching()
-                .withIgnoreCase()
-                .withStringMatcher(
-                        ExampleMatcher.StringMatcher.CONTAINING);
-        Example example = Example.of(filter, matcher);
-        Page<Client> clients = clientService.findAll(example, pageable);
-        return ResponseEntity.ok(clients);
+    public ResponseEntity<Page<ClientResponseDTO>> findAll(@PageableDefault(size = 5) Pageable pageable, ClientDTO filter) {
+
+        return ResponseEntity.ok(clientService.findAllByExample(pageable, filter));
     }
 
     @GetMapping("/{id}")
@@ -69,9 +58,9 @@ public class ClientController {
             @ApiResponse(code = 200, message = "Client found successfully"),
             @ApiResponse(code = 404, message = "Client not found by the given id"),
     })
-    public ResponseEntity findById(@PathVariable Integer id) {
-        Optional<Client> client = clientService.findById(id);
-        return client.map(value -> new ResponseEntity(value, HttpStatus.OK)).orElseGet(() -> ResponseEntity.notFound().build());
+    public ResponseEntity<ClientResponseDTO> findById(@PathVariable Integer id) {
+
+        return ResponseEntity.ok(clientService.findById(id));
     }
 
     @GetMapping("/byName/{name}")
@@ -80,11 +69,8 @@ public class ClientController {
             @ApiResponse(code = 200, message = "Client found successfully"),
             @ApiResponse(code = 404, message = "Client not found by the given name"),
     })
-    public ResponseEntity<Page<Client>> findByName(@PathVariable String name, @PageableDefault(size = 5) Pageable pageable) {
-        Optional<Page<Client>> clients = Optional.of(clientService.findByName(name, pageable));
-        return clients.map(clientList -> new ResponseEntity(clientList, HttpStatus.OK))
-                .orElseGet(() -> ResponseEntity.notFound()
-                        .build());
+    public ResponseEntity<Page<ClientResponseDTO>> findByName(@PathVariable String name, @PageableDefault(size = 5) Pageable pageable) {
+         return new ResponseEntity<>(clientService.findByName(name, pageable), HttpStatus.OK);
     }
 
     @PostMapping
@@ -93,7 +79,7 @@ public class ClientController {
             @ApiResponse(code = 201, message = "Client saved successfully"),
             @ApiResponse(code = 400, message = "Validation Error"),
     })
-    public ResponseEntity<Client> save(@RequestBody @Valid Client client) {
+    public ResponseEntity<ClientResponseDTO> save(@RequestBody @Valid ClientDTO client) {
         return new ResponseEntity<>(clientService.save(client), HttpStatus.CREATED);
     }
 
@@ -103,12 +89,8 @@ public class ClientController {
             @ApiResponse(code = 200, message = "Client found successfully"),
             @ApiResponse(code = 404, message = "Client not found by the given id"),
     })
-    public ResponseEntity deleteById(@PathVariable Integer id) {
-        if (clientService.findById(id).isPresent()) {
-            clientService.deleteById(id);
-            return ResponseEntity.ok().build();
-        }
-        return ResponseEntity.notFound().build();
+    public void deleteById(@PathVariable Integer id) {
+        clientService.deleteById(id);
     }
 }
 

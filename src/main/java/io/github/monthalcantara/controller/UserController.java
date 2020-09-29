@@ -1,8 +1,11 @@
 package io.github.monthalcantara.controller;
 
 import io.github.monthalcantara.dto.request.CredentialsRequestDTO;
+import io.github.monthalcantara.dto.request.UserLoginDTO;
 import io.github.monthalcantara.dto.response.TokenDTO;
+import io.github.monthalcantara.dto.response.UserLoginResponseDTO;
 import io.github.monthalcantara.exception.InvalidPasswordException;
+import io.github.monthalcantara.mappers.UserMapper;
 import io.github.monthalcantara.model.UserLogin;
 import io.github.monthalcantara.security.jwt.JwtService;
 import io.github.monthalcantara.service.implementation.UserServiceImpl;
@@ -40,8 +43,11 @@ public class UserController {
             @ApiResponse(code = 201, message = "Client saved successfully"),
             @ApiResponse(code = 400, message = "Validation Error"),
     })
-    public ResponseEntity<UserLogin> save(@RequestBody @Valid UserLogin userLogin) {
-        return new ResponseEntity<>(userService.save(userLogin), HttpStatus.CREATED);
+    public ResponseEntity<UserLoginResponseDTO> save(@RequestBody @Valid UserLoginDTO userLogin) {
+        return new ResponseEntity<>(
+                userService.save(userLogin),
+                HttpStatus.CREATED
+        );
     }
 
     @PostMapping("/auth")
