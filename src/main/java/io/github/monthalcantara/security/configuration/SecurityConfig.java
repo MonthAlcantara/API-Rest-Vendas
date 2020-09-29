@@ -1,4 +1,4 @@
-package io.github.monthalcantara.config;
+package io.github.monthalcantara.security.configuration;
 
 import io.github.monthalcantara.security.jwt.JwtAuthFilter;
 import io.github.monthalcantara.security.jwt.JwtService;

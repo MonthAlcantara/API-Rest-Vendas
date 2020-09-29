@@ -1,4 +1,4 @@
-package io.github.monthalcantara.config;
+package io.github.monthalcantara.configuration;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
