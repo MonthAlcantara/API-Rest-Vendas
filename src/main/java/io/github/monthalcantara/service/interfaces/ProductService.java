@@ -1,20 +1,25 @@
 package io.github.monthalcantara.service.interfaces;
 
+import io.github.monthalcantara.dto.request.ProductDTO;
+import io.github.monthalcantara.dto.response.ProductResponseDTO;
 import io.github.monthalcantara.model.Product;
 import org.springframework.data.domain.Example;
-
-import java.util.List;
-import java.util.Optional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface ProductService {
 
-    List findAll(Example example);
+    Page<Product> findAll(Example example, Pageable pageable);
 
-    Optional<Product> findById(Integer id);
+    ProductResponseDTO findById(Integer id);
 
-    Optional<Product> findByDescription(String description);
+    ProductResponseDTO findByDescription(String description);
 
     void deleteById(Integer id);
 
-    Product save(Product product);
+    ProductResponseDTO save(ProductDTO productDTO);
+
+    ProductResponseDTO update(Integer id, ProductDTO productDTO);
+
+    Page<ProductResponseDTO> findAllByExample(Pageable pageable, ProductDTO filter);
 }

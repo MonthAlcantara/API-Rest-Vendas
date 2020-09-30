@@ -22,6 +22,7 @@ public class ClientServiceImpl implements ClientService {
     ClientMapper clientMapper;
 
 
+
     @Override
     public ClientResponseDTO findByNameLike(String name) {
         Optional<Client> client = clientRepository.findByNameLike(name);
@@ -95,6 +96,9 @@ public class ClientServiceImpl implements ClientService {
         Optional<Client> clientOptional = clientRepository.findById(id);
         if (clientOptional.isPresent()) {
             clientOptional.get().setName(client.getName());
+            clientOptional.get().setCpf(client.getCpf());
+            clientOptional.get().setOrderItems(client.getOrderItems());
+            clientRepository.save(clientOptional.get());
             return clientMapper.clientToClientResponseDTO(clientOptional.get());
         }
         return clientMapper.clientToClientResponseDTO(clientRepository.save(client));

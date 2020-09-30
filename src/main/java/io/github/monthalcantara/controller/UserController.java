@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 @RestController
@@ -56,7 +57,7 @@ public class UserController {
             @ApiResponse(code = 200, message = "Token successfully created"),
             @ApiResponse(code = 400, message = "Validation Error"),
     })
-    public TokenDTO authenticate(@RequestBody @Valid CredentialsRequestDTO userLogin) {
+    public TokenDTO authenticate(@RequestBody @Valid CredentialsRequestDTO userLogin, HttpSession session) {
         try {
             UserLogin user = UserLogin.builder()
                     .login(userLogin.getLogin())

@@ -1,19 +1,20 @@
 package io.github.monthalcantara.mappers;
 
-import io.github.monthalcantara.dto.request.ClientDTO;
 import io.github.monthalcantara.dto.request.OrderDTO;
 import io.github.monthalcantara.dto.response.OrderResponseDTO;
 import io.github.monthalcantara.model.OrderItem;
+import org.mapstruct.Mapper;
 import org.springframework.data.domain.Page;
 
+//@Mapper(componentModel = "spring")
 public interface OrderMapper {
-    OrderDTO clientToClientDTO(OrderItem client);
 
-    OrderResponseDTO clientToClientResponseDTO(OrderItem client);
+    OrderDTO toOrderDTO(OrderItem orderItem);
 
-    OrderItem clientDTOToClient(ClientDTO clientDTO);
+    OrderResponseDTO toOrderResponseDTO(OrderItem orderItem);
 
-    OrderItem clientResponseDTOToClient(OrderResponseDTO clientResponseDTO);
+    OrderItem orderDTOToOrderItem(OrderDTO orderDTO);
 
-    Page<OrderResponseDTO> toPageResponseDTO(Page<OrderItem> orders);
+    OrderItem orderResponseDTOToOrderItem(OrderResponseDTO orderResponseDTO);
+
 }
