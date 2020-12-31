@@ -14,16 +14,19 @@ import java.util.Optional;
 
 public interface ClientRepository extends JpaRepository<Client, Integer> {
 
-    Optional<Page<Client>> findByName(String name, Pageable pageable);
+    @Query("Select c from Client c where c.name =:name ")
+    Page<Client> findByName(@Param("name") String name, Pageable pageable);
 
-    void deleteByName(String name);
+   // @Query("Delete from Client c where c.name = :name")
+    void deleteByName( String name);
 
     boolean existsByName(String name);
 
     @Query("Select c from Client c left join fetch c.orderItems where c.id = :id")
     Optional<Client> findClientFetchOrderItem(@Param("id") Integer id);
 
-    Optional<Client> findByNameLike(String name);
+    @Query("Select c from Client c where c.name like %:name%")
+    Optional<Client> findByNameLike(@Param("name") String name);
 
     Optional<Client> findById(Integer id);
 

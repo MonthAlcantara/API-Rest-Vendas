@@ -81,10 +81,8 @@ public class ClientController {
             @ApiResponse(code = 404, message = "Client not found by the given name"),
     })
     public ResponseEntity<Page<Client>> findByName(@PathVariable String name, @PageableDefault(size = 5) Pageable pageable) {
-        Optional<Page<Client>> clients = Optional.of(clientService.findByName(name, pageable));
-        return clients.map(clientList -> new ResponseEntity(clientList, HttpStatus.OK))
-                .orElseGet(() -> ResponseEntity.notFound()
-                        .build());
+        Page<Client> clients = clientService.findByName(name, pageable);
+        return ResponseEntity.ok(clients);
     }
 
     @PostMapping

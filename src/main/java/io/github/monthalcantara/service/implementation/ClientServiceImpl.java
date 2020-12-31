@@ -30,8 +30,8 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public Page<Client> findByName(String name, Pageable pageable) {
-        Optional<Page<Client>> clients = clientRepository.findByName(name, pageable);
-        return clients.orElseThrow(()-> new BusinessRuleException("Client not found"));
+        Page<Client> clients = clientRepository.findByName(name, pageable);
+        return clients;
     }
 
     @Override
