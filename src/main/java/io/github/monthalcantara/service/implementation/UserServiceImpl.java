@@ -1,6 +1,9 @@
 package io.github.monthalcantara.service.implementation;
 
+import io.github.monthalcantara.dto.request.UserLoginDTO;
+import io.github.monthalcantara.dto.response.UserLoginResponseDTO;
 import io.github.monthalcantara.exception.InvalidPasswordException;
+import io.github.monthalcantara.mappers.UserMapper;
 import io.github.monthalcantara.model.UserLogin;
 import io.github.monthalcantara.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +19,9 @@ public class UserServiceImpl implements UserDetailsService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private UserMapper userMapper;
 
     @Autowired
     private UserRepository repository;
@@ -42,9 +48,10 @@ public class UserServiceImpl implements UserDetailsService {
                 .build();
     }
 
-    public UserLogin save(UserLogin userLogin) {
+    public UserLoginResponseDTO save(UserLoginDTO userLoginDTO) {
+        UserLogin userLogin = userMapper.userLoginDTOToUserLogin(userLoginDTO);
         String password = passwordEncoder.encode(userLogin.getPassword());
         userLogin.setPassword(password);
-        return repository.save(userLogin);
+        return userMapper.userLoginToUserLoginResponseDTO(repository.save(userLogin));
     }
 }

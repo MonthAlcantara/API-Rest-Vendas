@@ -1,7 +1,7 @@
 package io.github.monthalcantara.advice;
 
 import io.github.monthalcantara.exception.BusinessRuleException;
-import io.github.monthalcantara.exception.OrderNotFoundException;
+import io.github.monthalcantara.exception.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -20,9 +20,9 @@ public class ControllerAdvice {
         return new ApiError(e.getMessage());
     }
 
-    @ExceptionHandler(OrderNotFoundException.class)
+    @ExceptionHandler(ResourceNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ApiError orderNotFound(OrderNotFoundException e) {
+    public ApiError resourceNotFound(ResourceNotFoundException e) {
         return new ApiError(e.getMessage());
     }
 

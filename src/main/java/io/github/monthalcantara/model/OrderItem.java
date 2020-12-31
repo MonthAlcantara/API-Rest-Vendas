@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
@@ -40,5 +41,5 @@ public class OrderItem {
 
     @OneToMany(mappedBy = "orderItem")
     private List<Item> items;
-
 }
+

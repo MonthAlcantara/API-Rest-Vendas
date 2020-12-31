@@ -1,34 +1,34 @@
 package io.github.monthalcantara.service.interfaces;
 
+import io.github.monthalcantara.dto.request.ClientDTO;
+import io.github.monthalcantara.dto.response.ClientResponseDTO;
 import io.github.monthalcantara.model.Client;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import java.util.List;
-import java.util.Optional;
-
 
 public interface ClientService {
-    Client findByNameLike(String name);
+    ClientResponseDTO findByNameLike(String name);
 
-    Optional<Client> findById(Integer id);
+    ClientResponseDTO findById(Integer id);
 
-    Page<Client> findByName(String name, Pageable pageable);
+    Page<ClientResponseDTO> findByName(String name, Pageable pageable);
 
-    Client findClientFetchOrderItem(Integer id);
+    ClientResponseDTO findClientFetchOrderItem(Integer id);
 
     boolean existsByName(String name);
 
-    Client save(Client client);
+    ClientResponseDTO save(ClientDTO clientDTO);
 
     void deleteByName(String name);
 
     void deleteById(Integer id);
 
-    Client updateById(Integer id, Client client);
+    ClientResponseDTO updateById(Integer id, ClientDTO clientDTO);
 
-    Page<Client> findAll(Example example, Pageable pageable);
+    Page<ClientResponseDTO> findAll(Example example, Pageable pageable);
 
 
+    Page<ClientResponseDTO> findAllByExample(Pageable pageable, ClientDTO filter);
 }

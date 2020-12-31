@@ -2,12 +2,14 @@ package io.github.monthalcantara.service.implementation;
 
 import io.github.monthalcantara.dto.request.ItemDTO;
 import io.github.monthalcantara.dto.request.OrderDTO;
+import io.github.monthalcantara.dto.response.ClientResponseDTO;
 import io.github.monthalcantara.dto.response.ItemResponseDTO;
 import io.github.monthalcantara.dto.response.OrderResponseDTO;
 import io.github.monthalcantara.enums.OrderStatus;
 import io.github.monthalcantara.exception.BusinessRuleException;
-import io.github.monthalcantara.exception.OrderNotFoundException;
-import io.github.monthalcantara.model.Client;
+import io.github.monthalcantara.exception.ResourceNotFoundException;
+import io.github.monthalcantara.mappers.ClientMapper;
+import io.github.monthalcantara.mappers.ProductMapper;
 import io.github.monthalcantara.model.Item;
 import io.github.monthalcantara.model.OrderItem;
 import io.github.monthalcantara.model.Product;
@@ -47,6 +49,12 @@ public class OrderServiceImpl implements OrderService {
     @Autowired
     ItemService itemService;
 
+    @Autowired
+    ClientMapper clientMapper;
+
+    @Autowired
+    ProductMapper productMapper;
+
 
     @Override
     public Optional<OrderItem> findById(Integer id) {
@@ -60,10 +68,8 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public Optional<Page<OrderItem>> findOrderItemByClient(Integer id, Pageable pageable) {
-        Client client = clientService.findById(id)
-                .orElseThrow(() ->
-                        new BusinessRuleException("Client code not found"));
-        return orderRepository.findByClient(client, pageable);
+        ClientResponseDTO client = clientService.findById(id);
+        return orderRepository.findByClient(clientMapper.clientResponseDTOToClient(client), pageable);
     }
 
     @Override
@@ -75,11 +81,10 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     public OrderItem save(OrderDTO orderItem) {
         Integer idClient = orderItem.getClient();
-        Client client = clientService.findById(idClient)
-                .orElseThrow(() -> new BusinessRuleException("Client code not found"));
+        ClientResponseDTO client = clientService.findById(idClient);
 
         OrderItem build = OrderItem.builder()
-                .client(client)
+                .client(clientMapper.clientResponseDTOToClient(client))
                 .status(OrderStatus.DONE)
                 .date(LocalDate.now())
                 .total(orderItem.getTotal())
@@ -111,7 +116,7 @@ public class OrderServiceImpl implements OrderService {
         return order
                 .map(orderItem -> orderItem.getTotal())
                 .orElseThrow(() ->
-                        new BusinessRuleException("Order not found"));
+                        new ResourceNotFoundException("Order not found"));
     }
 
     @Override
@@ -120,7 +125,7 @@ public class OrderServiceImpl implements OrderService {
             Integer idOrder = order.getId();
             orderItem.setId(idOrder);
             return orderRepository.save(orderItem);
-        }).orElseThrow(() -> new BusinessRuleException("Order not found"));
+        }).orElseThrow(() -> new ResourceNotFoundException("Order not found"));
     }
 
     @Override
@@ -136,12 +141,12 @@ public class OrderServiceImpl implements OrderService {
                 .stream()
                 .map(item -> {
                     Integer idProduct = item.getProduct();
-                    Product product = productService.findById(idProduct)
-                            .orElseThrow(() -> new BusinessRuleException("Product not found: " + idProduct));
+                    Product product = productMapper.productResponseDTOToProduct(productService.findById(idProduct));
+                            Optional.of(product).orElseThrow(() -> new ResourceNotFoundException("Product not found: " + idProduct));
 
                     return Item.builder()
                             .quantity(item.getQuantity())
-                            .products(product)
+                            .product(product)
                             .orderItem(orderItem)
                             .build();
                 }).collect(Collectors.toList());
@@ -185,7 +190,7 @@ public class OrderServiceImpl implements OrderService {
                     orderItem.setStatus(status);
                     return orderRepository.save(orderItem);
                 })
-                .orElseThrow(() -> new OrderNotFoundException());
+                .orElseThrow(() -> new ResourceNotFoundException("Order not found"));
     }
 
     public List<ItemResponseDTO> convertToItemDTO(List<Item> items) {
@@ -195,8 +200,8 @@ public class OrderServiceImpl implements OrderService {
         return items.stream().map(item -> {
             return new ItemResponseDTO()
                     .builder()
-                    .description(item.getProducts().getDescription())
-                    .priceUnit(item.getProducts().getPrice())
+                    .description(item.getProduct().getDescription())
+                    .priceUnit(item.getProduct().getPrice())
                     .quantity(item.getQuantity())
                     .build();
         })

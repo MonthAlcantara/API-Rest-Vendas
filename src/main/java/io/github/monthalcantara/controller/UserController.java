@@ -1,8 +1,11 @@
 package io.github.monthalcantara.controller;
 
 import io.github.monthalcantara.dto.request.CredentialsRequestDTO;
+import io.github.monthalcantara.dto.request.UserLoginDTO;
 import io.github.monthalcantara.dto.response.TokenDTO;
+import io.github.monthalcantara.dto.response.UserLoginResponseDTO;
 import io.github.monthalcantara.exception.InvalidPasswordException;
+import io.github.monthalcantara.mappers.UserMapper;
 import io.github.monthalcantara.model.UserLogin;
 import io.github.monthalcantara.security.jwt.JwtService;
 import io.github.monthalcantara.service.implementation.UserServiceImpl;
@@ -22,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 @RestController
@@ -40,8 +44,11 @@ public class UserController {
             @ApiResponse(code = 201, message = "Client saved successfully"),
             @ApiResponse(code = 400, message = "Validation Error"),
     })
-    public ResponseEntity<UserLogin> save(@RequestBody @Valid UserLogin userLogin) {
-        return new ResponseEntity<>(userService.save(userLogin), HttpStatus.CREATED);
+    public ResponseEntity<UserLoginResponseDTO> save(@RequestBody @Valid UserLoginDTO userLogin) {
+        return new ResponseEntity<>(
+                userService.save(userLogin),
+                HttpStatus.CREATED
+        );
     }
 
     @PostMapping("/auth")
@@ -50,7 +57,7 @@ public class UserController {
             @ApiResponse(code = 200, message = "Token successfully created"),
             @ApiResponse(code = 400, message = "Validation Error"),
     })
-    public TokenDTO authenticate(@RequestBody @Valid CredentialsRequestDTO userLogin) {
+    public TokenDTO authenticate(@RequestBody @Valid CredentialsRequestDTO userLogin, HttpSession session) {
         try {
             UserLogin user = UserLogin.builder()
                     .login(userLogin.getLogin())

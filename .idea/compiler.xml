@@ -9,10 +9,22 @@
         <outputRelativeToContentRoot value="true" />
         <module name="vendas" />
       </profile>
+      <profile name="Annotation profile for vendas" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="false">
+          <entry name="$MAVEN_REPOSITORY$/org/mapstruct/mapstruct-processor/1.4.0.Final/mapstruct-processor-1.4.0.Final.jar" />
+          <entry name="$MAVEN_REPOSITORY$/org/mapstruct/mapstruct/1.4.0.Final/mapstruct-1.4.0.Final.jar" />
+          <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.12/lombok-1.18.12.jar" />
+        </processorPath>
+        <module name="API-Rest-Vendas" />
+      </profile>
     </annotationProcessing>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="API-Rest-Vendas" options="-parameters" />
       <module name="vendas" options="-parameters" />
     </option>
   </component>
